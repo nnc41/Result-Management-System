@@ -1,11 +1,12 @@
+/*========LIBRARIES & DEFINITION =========*/
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
 #define MAX_STUDENTS 100
 #define MAX_USERNAME 20
 #define MAX_PASSWORD 20
 
+/*========STRUCTURES PART===========*/
 // Structure to represent a student
 typedef struct {
     char name[50];
@@ -20,31 +21,46 @@ typedef struct {
     char role;  // 'T' for Teacher, 'S' for Student
 } User;
 
-// Function prototypes
+/*===========FUNCTION PROTOTYPES==========*/
 void login(User* users, int numUsers, char role);
 void teacherMenu(Student* students, int* numStudents);
 void studentMenu(Student* students, int numStudents);
 
-int main() {
+
+
+
+
+/*===========MAIN FUNCTION=================*/
+int main(void) {
+    
+    // Store Teachers and Students datas for login
     User users[] = {
-        {"teacher1", "password1", 'T'},
-        {"student1", "password2", 'S'},
+        {"luci", "luciT", 'T'},
+        {"hana", "hanaS", 'S'},
         // Add more users as needed
     };
+    
+    // Count numbers of users to then use for loop and check
+    // if teacher/student exist
     int numUsers = sizeof(users) / sizeof(users[0]);
 
+
+
+    // WHY IDENTIFY THIS?????
     Student students[MAX_STUDENTS];
     int numStudents = 0;
-
+    
+    
+    // this is MAIN MENU before go to login function
+    // login as teacher or student
     int choice;
     char role;
-
     do {
-        printf("\nMain Menu\n");
+        printf("\n======Main Menu======\n");
         printf("1. Teacher Login\n");
         printf("2. Student Login\n");
         printf("3. Exit\n");
-        printf("Enter your choice: ");
+        printf("\nEnter your choice: ");
         scanf("%d", &choice);
 
         switch (choice) {
@@ -71,38 +87,46 @@ int main() {
 
     return 0;
 }
+/*==================END MAIN FUNCTION=========================*/
 
-// Function to perform login
+
+
+
+/*=========FUNCTIONS PART==================*/
+
+// Function to perform LOGIN
 void login(User* users, int numUsers, char role) {
     char username[MAX_USERNAME];
     char password[MAX_PASSWORD];
     int isValid = 0;
-
-    printf("\nEnter credentials:\n");
+    
+    // query user username and password
+    printf("\n\n======Enter credentials======\n");
     printf("Username: ");
     scanf("%s", username);
     printf("Password: ");
     scanf("%s", password);
-
+    
+    // check if that username and password exist
     for (int i = 0; i < numUsers; ++i) {
         if (users[i].role == role && strcmp(users[i].username, username) == 0 && strcmp(users[i].password, password) == 0) {
             isValid = 1;
             break;
         }
     }
-
     if (!isValid) {
         printf("Invalid credentials. Exiting...\n");
         exit(1);
     }
 }
 
-// Function to display the teacher menu
+// Function to display the TEACHER MENU
 void teacherMenu(Student* students, int* numStudents) {
     int choice;
 
     do {
-        printf("\nTeacher Menu\n");
+
+        printf("\n\n\t\t======Teacher Menu======\n");
         printf("1. Upload Grades\n");
         printf("2. Edit Grades\n");
         printf("3. Sort Grades\n");
@@ -110,16 +134,13 @@ void teacherMenu(Student* students, int* numStudents) {
         printf("5. Statistics\n");
         printf("6. Student Search\n");
         printf("7. Logout\n");
-        printf("Enter your choice: ");
+        printf("Enter your choice:(1-7) ");
         scanf("%d", &choice);
 
         switch (choice) {
-            // Implement teacher features here
-
             case 1:
                 // Upload Grades
                 break;
-
             case 2:
                 // Edit Grades
                 break;
@@ -143,29 +164,26 @@ void teacherMenu(Student* students, int* numStudents) {
             case 7:
                 printf("Logging out...\n");
                 break;
-
             default:
                 printf("Invalid choice. Please try again.\n");
         }
     } while (choice != 7);
 }
 
-// Function to display the student menu
+
+// Function to display the STUDENT MENU
 void studentMenu(Student* students, int numStudents) {
     int choice;
 
     do {
-        printf("\nStudent Menu\n");
+        printf("\n\n======Student Menu======\n");
         printf("1. View Grades\n");
         printf("2. Logout\n");
         printf("Enter your choice: ");
         scanf("%d", &choice);
 
         switch (choice) {
-            // Implement student features here
-
             case 1:
-                // View Grades
                 break;
 
             case 2:
@@ -179,6 +197,3 @@ void studentMenu(Student* students, int numStudents) {
 }
 
 
-
-// hello 
-// my name is 
