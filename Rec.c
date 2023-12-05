@@ -1,30 +1,47 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#define MAX_NAME 50
+#define MAX_PASSWORD 50
+#define MAX_USERNAME 50
+
 
 // Define data structures
 struct Student {
-    char name[50];
+    char name[MAX_NAME];
     int number;
     int marks;
 };
 
 struct Teacher {
-    char username[50];
-    char password[50];
+    char username[MAX_USERNAME];
+    char password[MAX_PASSWORD];
     int access_level;
 };
 
 // Function to check teacher login
 int teacherLogin(struct Teacher* teachers, int numTeachers, char* username, char* password) {
+    
+    // Take datas from file "datas" (JUST EDIT)
+    FILE* file = fopen("datas.txt", "r");
+    if (file == NULL){
+        printf("Error openning files datas for reading.\n"); // use fprintf for std error messeges
+        return 1;
+    }
+    
     for (int i = 0; i < numTeachers; i++) {
+        if (fscanf(file, "%50s %50s", teachers[i].username, teachers[i].password) != 2) {
+            printf("Error reading data from the file.\n");
+            break;
+        }
         if (strcmp(teachers[i].username, username) == 0 && strcmp(teachers[i].password, password) == 0) {
             return i;  // Return the index of the teacher
         }
     }
     return -1;  // Invalid login
 }
-
+    
+    
 
 // Function to check student login (why atoi(password))
 int studentLogin(struct Student* students, int numStudents, char* username, char* password) {
@@ -42,7 +59,7 @@ void uploadGrades(struct Student* students, int numStudents) {
     FILE* file = fopen("student_grades.txt", "w");
 
     if (file == NULL) {
-        printf("Error opening the file for writing.\n");
+        printf("Error opening the file for writing.\n"); // use fprintf for std error messeges
         return;
     }
 
@@ -58,7 +75,7 @@ void uploadGrades(struct Student* students, int numStudents) {
 
 }
 
-// Function to edit grades 
+// Function to edit grades
 void editGrades(struct Student* students, int numStudents) {
     // Ask for the student ID
     int id;
@@ -95,10 +112,6 @@ void sortGrades(struct Student* students, int numStudents) {
 
 
 
-
-
-
-
 // Function to view grades (JUST EDIT)
 void viewGrades(struct Student* students, int numStudents) {
     printf("DISPLAY STUDENTS' GRADES:\n");
@@ -114,7 +127,7 @@ void viewGrades(struct Student* students, int numStudents) {
             printf("Error reading data from the file.\n");
             break;
         }
-        printf("%s %d %d\n", students[i].name, students[i].number, students[i].marks);
+        printf("\n Student's Name: %s\nStudent's ID: %d \n Student's Grade: %d\n", students[i].name, students[i].number, students[i].marks);
     }
     fclose(file);
 }
@@ -130,7 +143,7 @@ void studentSearch(struct Student* students, int numStudents) {
     // Implement this function to allow the teacher to search for students based on name or number.
 }
 
-int main() {
+int main(void) {
     // Define the number of teachers and students
     int numTeachers = 2;
     int numStudents = 3;
@@ -274,3 +287,4 @@ int main() {
 
     return 0;
 }
+
