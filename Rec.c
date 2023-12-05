@@ -60,7 +60,21 @@ void uploadGrades(struct Student* students, int numStudents) {
 
 // Function to edit grades
 void editGrades(struct Student* students, int numStudents) {
-    // Implement this function to allow the teacher to edit individual student grades.
+    char nameOrNumber[50];
+    int grade;
+
+    printf("Enter student name or number to edit grade: ");
+    scanf("%s", nameOrNumber);
+
+    // Search for the Student
+    for (int i = 0; i <numStudents; i++){
+        if (strcmp(students[i].name, nameOrNumber) = 0 || strcmp(nameOrNumber,students [i].number) = 0) {
+            printf("Enter new grade for %s (Student %d): ", students[i].name, students[i].number);
+            scanf("%d", &grade);
+            students[i].marks = grade;
+            break;
+        }
+    }
 }
 
 // Function to sort grades
