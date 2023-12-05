@@ -60,20 +60,31 @@ void uploadGrades(struct Student* students, int numStudents) {
 
 // Function to edit grades
 void editGrades(struct Student* students, int numStudents) {
-    char nameOrNumber[50];
-    int grade;
+    // Ask for the student ID
+    int id;
+    printf("Enter student ID: ");
+    scanf("%d", &id);
 
-    printf("Enter student name or number to edit grade: ");
-    scanf("%s", nameOrNumber);
-
-    // Search for the Student
-    for (int i = 0; i <numStudents; i++){
-        if (strcmp(students[i].name, nameOrNumber) = 0 || strcmp(nameOrNumber,students [i].number) = 0) {
-            printf("Enter new grade for %s (Student %d): ", students[i].name, students[i].number);
-            scanf("%d", &grade);
-            students[i].marks = grade;
+    // Find the student with the given ID
+    int found = 0;
+    for (int i = 0; i < numStudents; i++) {
+        if (students[i].number == id) {
+            found = 1;
             break;
         }
+    }
+
+    // If the student is found, allow the teacher to edit their grades
+    if (found) {
+        printf("Editing grades for student with ID %d.\n", id);
+        for (int i = 0; i < 5; i++) {
+            printf("Enter grade %d: ", i + 1);
+            scanf("%d", &students[i].marks);
+        }
+    }
+    // If the student is not found, inform the teacher
+    else {
+        printf("No student found with ID %d.\n", id);
     }
 }
 
