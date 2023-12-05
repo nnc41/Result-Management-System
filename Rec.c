@@ -26,7 +26,7 @@ int teacherLogin(struct Teacher* teachers, int numTeachers, char* username, char
 }
 
 
-// Function to check student login
+// Function to check student login (why atoi(password))
 int studentLogin(struct Student* students, int numStudents, char* username, char* password) {
     for (int i = 0; i < numStudents; i++) {
         if (strcmp(students[i].name, username) == 0 && students[i].number == atoi(password)) {
@@ -36,7 +36,7 @@ int studentLogin(struct Student* students, int numStudents, char* username, char
     return -1;  // Invalid login
 }
 
-// Function to upload grades
+// Function to upload grades (this is when open file and write on it)
 void uploadGrades(struct Student* students, int numStudents) {
     // Open a file for writing (you can specify the file name)
     FILE* file = fopen("student_grades.txt", "w");
@@ -46,7 +46,7 @@ void uploadGrades(struct Student* students, int numStudents) {
         return;
     }
 
-    // Input the student grades and write them to the file
+    // Input the student grades and write them to the file (how many grades each student)
     for (int i = 0; i < numStudents; i++) {
         printf("Enter grade for %s (Student %d): ", students[i].name, students[i].number);
         scanf("%d", &students[i].marks);
@@ -58,7 +58,7 @@ void uploadGrades(struct Student* students, int numStudents) {
 
 }
 
-// Function to edit grades
+// Function to edit grades 
 void editGrades(struct Student* students, int numStudents) {
     // Ask for the student ID
     int id;
@@ -74,7 +74,7 @@ void editGrades(struct Student* students, int numStudents) {
         }
     }
 
-    // If the student is found, allow the teacher to edit their grades
+    // If the student is found, allow the teacher to edit their grades (why i < 5)
     if (found) {
         printf("Editing grades for student with ID %d.\n", id);
         for (int i = 0; i < 5; i++) {
@@ -93,10 +93,32 @@ void sortGrades(struct Student* students, int numStudents) {
     // Implement a sorting algorithm to sort the students based on their marks.
 }
 
-// Function to view grades
+
+
+
+
+
+
+// Function to view grades (JUST EDIT)
 void viewGrades(struct Student* students, int numStudents) {
-    // Implement this function to display the grades of all students.
+    printf("DISPLAY STUDENTS' GRADES:\n");
+    FILE* file = fopen("student_grades.txt", "r");
+    
+    if (file == NULL) {
+        printf("Error opening the file for reading.\n");
+        return;
+    }
+
+    for (int i = 0; i < numStudents; i++) {
+        if (fscanf(file, "%s %d %d", students[i].name, &students[i].number, &students[i].marks) != 3) {
+            printf("Error reading data from the file.\n");
+            break;
+        }
+        printf("%s %d %d\n", students[i].name, students[i].number, students[i].marks);
+    }
+    fclose(file);
 }
+
 
 // Function to calculate statistics
 void calculateStatistics(struct Student* students, int numStudents) {
