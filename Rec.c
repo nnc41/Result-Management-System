@@ -13,8 +13,6 @@ struct Student {
     char name[MAX_NAME];
     int number;
     int marks;
-    
-    
 };
 
 struct Teacher {
@@ -98,19 +96,73 @@ void sortGrades(struct Student* students, int numStudents) {
 
 
 
-// Function to view grades (JUST EDIT)
+// Function to view grades
 void viewGrades(struct Student* students, int numStudents) {
     printf("\nDISPLAY STUDENTS' GRADES:");
     for (int i = 0; i < numStudents; i++) {
-        printf("\nStudent's Name: %s\nStudent's ID: %d \n Student's Grade: %d\n", students[i].name, students[i].number, students[i].marks);
+        printf("\nStudent's Name: %s\nStudent's ID: %d \nStudent's Grade: %d\n", students[i].name, students[i].number, students[i].marks);
     }
 }
 
 
 // Function to calculate statistics
+// Implement this function to calculate average, minimum, and maximum marks. (JUST UPDATE)
 void calculateStatistics(struct Student* students, int numStudents) {
-    // Implement this function to calculate average, minimum, and maximum marks.
-}
+    int total = 0;
+    int average;
+    int min = students[0].marks;
+    int max = students[0].marks;
+    int indexmin = 0;
+    int indexmax = 0;
+    char studentsWithMin[100] = "";
+    char studentsWithMax[100] = "";
+    
+    
+    printf("\nSTATISTICS RECORD:");
+    // Calculate the average marks and display
+    for (int i = 0; i < numStudents; i++) {
+        total += students[i].marks;
+    }
+    average = total/numStudents;
+    printf("\nAverage mark of %d students is: %d", numStudents, average);
+    
+    // Calculate the minimum and maximum marks and display
+    for (int i = 0; i < numStudents ; i++) {
+        if (students[i].marks < min) {
+            min = students[i].marks;
+            indexmin = i;
+            strcpy(studentsWithMin, students[i].name); // Update student with min marks
+        }
+        if (min == students[0].marks){
+            strcpy(studentsWithMin, students[0].name);
+        }
+        if (students[i].marks >= max) {
+            max = students[i].marks;
+            indexmax = i;
+            strcpy(studentsWithMax, students[i].name); // Update student with max marks
+        }
+        if (max == students[0].marks){
+            strcpy(studentsWithMax, students[0].name);
+        }
+    }
+        
+        for (int i = 0; i < numStudents ; i++) {
+            if (students[i].marks == min && students[i].name != students[indexmin].name) {
+                strcat(studentsWithMin, ", ");
+                strcat(studentsWithMin, students[i].name); // Append student with min marks
+                
+            }
+            if (students[i].marks == max && students[i].name != students[indexmax].name){
+                strcat(studentsWithMax, ", ");
+                strcat(studentsWithMax, students[i].name); // Append student with max marks
+            }
+        }
+        
+        printf("\nMinimum mark: %d (Students with minimum marks: %s)", min, studentsWithMin);
+        printf("\nMaximum mark: %d (Students with maximum marks: %s)", max, studentsWithMax);
+    }
+
+
 
 // Function for student search
 void studentSearch(struct Student* students, int numStudents) {
@@ -132,10 +184,10 @@ int main(void) {
     };
 
     struct Student students[4] = {
-        {"student1", "password1", "A", 11, 0},
-        {"student2", "password2", "B", 22, 0},
-        {"student3", "password3", "C", 33, 0},
-        {"student4", "password4", "D", 44, 0},
+        {"student1", "password1", "A", 111, 0},
+        {"student2", "password2", "B", 222, 0},
+        {"student3", "password3", "C", 333, 0},
+        {"student4", "password4", "D", 444, 0},
     };
 
 
@@ -143,7 +195,7 @@ int main(void) {
     int loggedInStudent;
 
     while (1) {
-        int exit = 0;
+        int exit;
         int choice;
         printf("\nMAIN MENU:\n1. Teacher login\n2. Student login\n3. Exit\nEnter your choice: ");
         scanf("%d", &choice);
@@ -161,13 +213,15 @@ int main(void) {
             loggedInTeacher = teacherLogin(teachers, numTeachers, username, password);
             
             //Login Teacher Success
-            if (loggedInTeacher != -1) {
+            if (loggedInTeacher != -1) { // if loggedInTeacher return -1 means fail
+                                         // if loggedInTeacher return index means success
                 printf("Teacher login successful!\n");
                 // Implement the teacher menu here
                 while (1) {
+                    exit  = 0;
                     // Implement the teacher menu options
                     int teacherChoice;
-                    printf("\nTEACHER MENU:\n");
+                    printf("\n\nTEACHER MENU:\n");
                     printf("1. Upload grades\n");
                     printf("2. Edit grades\n");
                     printf("3. Sort grades\n");
@@ -182,12 +236,10 @@ int main(void) {
                     
                     switch (teacherChoice) {
                         case 1:
-                            // Call the uploadGrades function to upload student grades
                             uploadGrades(students, numStudents);
                             break;
                             
                         case 2:
-                            // Call the editGrades function to edit student grades
                             editGrades(students, numStudents);
                             break;
                             
@@ -197,12 +249,10 @@ int main(void) {
                             break;
                             
                         case 4:
-                            // Call the viewGrades function to view all student grades
                             viewGrades(students, numStudents);
                             break;
                             
                         case 5:
-                            // Call the calculateStatistics function to calculate statistics
                             calculateStatistics(students, numStudents);
                             break;
                             
@@ -222,11 +272,12 @@ int main(void) {
                             printf("Invalid choice. Please try again.\n");
                     }
                     
+                    // Make case 7 logout return to main menu
                     if (exit == 1)
                         break;
                 }
                 
-                // Login Teacher Fail
+                // Login Teacher Fail (Return -1)
             } else {
                 printf("Invalid login credentials. Try again.\n");
             }
@@ -250,6 +301,7 @@ int main(void) {
                 printf("Student login successful!\n");
                 // Implement the student menu here
                 while (1) {
+                    exit  = 0;
                     int studentChoice;
                     printf("\nSTUDENT MENU:\n");
                     printf("1. View grades\n");
@@ -274,6 +326,7 @@ int main(void) {
                             printf("Invalid choice. Please try again.\n");
                     }
                     
+                    // Make case 2 logout return to main menu
                     if (exit == 1)
                         break;
                 }
