@@ -44,25 +44,14 @@ int studentLogin(struct Student* students, int numStudents, char* username, char
     return -1;  // Invalid login
 }
 
-// Function to upload grades (this is when open file and write on it)
+// Function to upload grades
 void uploadGrades(struct Student* students, int numStudents) {
-    // Open a file for writing (you can specify the file name)
-    FILE* file = fopen("student_grades.txt", "w");
 
-    if (file == NULL) {
-        fprintf(stderr, "Error opening/reading/writing file.\n");
-    }
-
-    // Input the student grades and write them to the file (how many grades each student)
     for (int i = 0; i < numStudents; i++) {
         printf("Enter grade for %s (Student %d): ", students[i].name, students[i].number);
         scanf("%d", &students[i].marks);
-        fprintf(file, "%s %d %d\n", students[i].name, students[i].number, students[i].marks);
         printf("%s %d %d\n", students[i].name, students[i].number, students[i].marks);
     }
-
-    // Close the file
-    fclose(file);
 
 }
 
@@ -89,12 +78,35 @@ void editGrades(struct Student* students, int numStudents) {
     }
 }
 
-// Function to sort grades
-void sortGrades(struct Student* students, int numStudents) {
-    // Implement a sorting algorithm to sort the students based on their marks.
+/*
+ The function compares the marks values:
+ If marksP is less than marksQ, it returns -1. This indicates to qsort that p should come before q.
+ If marksP is greater than marksQ, it returns 1. This indicates that p should come after q.
+ If marksP is equal to marksQ, it returns 0, indicating that the order between p and q does not matter since they have the same value.
+ */
+int comparator(const void* p, const void* q) {
+    int marksP = ((struct Student*)p)->marks;
+    int marksQ = ((struct Student*)q)->marks;
+
+    if (marksP < marksQ) return -1;
+    else if (marksP > marksQ) return 1;
+    else return 0;
 }
 
 
+// Function to sort grades
+void sortGrades(struct Student* students, int numStudents) {
+    // Sort the structure based on the specified comparator
+    qsort(students, numStudents, sizeof(struct Student), comparator);
+  
+    // Print the Sorted Structure
+    printf("\n\nSORTED BY MARKS:\n");
+    for (int i = 0; i < numStudents; i++) {
+        printf("\nStudent's Name: %s\nStudent's ID: %d \nStudent's Grade: %d\n", students[i].name, students[i].number, students[i].marks);
+    }
+}
+
+    
 
 // Function to view grades
 void viewGrades(struct Student* students, int numStudents) {
@@ -136,7 +148,7 @@ void calculateStatistics(struct Student* students, int numStudents) {
         if (min == students[0].marks){
             strcpy(studentsWithMin, students[0].name);
         }
-        if (students[i].marks >= max) {
+        if (students[i].marks > max) {
             max = students[i].marks;
             indexmax = i;
             strcpy(studentsWithMax, students[i].name); // Update student with max marks
@@ -167,6 +179,9 @@ void calculateStatistics(struct Student* students, int numStudents) {
 // Function for student search
 void studentSearch(struct Student* students, int numStudents) {
     // Implement this function to allow the teacher to search for students based on name or number.
+    
+    
+    
 }
 
 
