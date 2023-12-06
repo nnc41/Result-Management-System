@@ -8,9 +8,13 @@
 
 // Define data structures
 struct Student {
+    char username[MAX_USERNAME];
+    char password[MAX_PASSWORD];
     char name[MAX_NAME];
     int number;
     int marks;
+    
+    
 };
 
 struct Teacher {
@@ -22,18 +26,7 @@ struct Teacher {
 // Function to check teacher login
 int teacherLogin(struct Teacher* teachers, int numTeachers, char* username, char* password) {
     
-    // Take datas from file "datas" (JUST EDIT)
-    FILE* file = fopen("datas.txt", "r");
-    if (file == NULL){
-        printf("Error openning files datas for reading.\n"); // use fprintf for std error messeges
-        return 1;
-    }
-    
     for (int i = 0; i < numTeachers; i++) {
-        if (fscanf(file, "%50s %50s", teachers[i].username, teachers[i].password) != 2) {
-            printf("Error reading data from the file.\n");
-            break;
-        }
         if (strcmp(teachers[i].username, username) == 0 && strcmp(teachers[i].password, password) == 0) {
             return i;  // Return the index of the teacher
         }
@@ -43,10 +36,10 @@ int teacherLogin(struct Teacher* teachers, int numTeachers, char* username, char
     
     
 
-// Function to check student login (why atoi(password))
+// Function to check student login
 int studentLogin(struct Student* students, int numStudents, char* username, char* password) {
     for (int i = 0; i < numStudents; i++) {
-        if (strcmp(students[i].name, username) == 0 && students[i].number == atoi(password)) {
+        if (strcmp(students[i].username, username) == 0 && strcmp(students[i].password, password) == 0) {
             return i;  // Return the index of the student
         }
     }
@@ -59,8 +52,7 @@ void uploadGrades(struct Student* students, int numStudents) {
     FILE* file = fopen("student_grades.txt", "w");
 
     if (file == NULL) {
-        printf("Error opening the file for writing.\n"); // use fprintf for std error messeges
-        return;
+        fprintf(stderr, "Error opening/reading/writing file.\n");
     }
 
     // Input the student grades and write them to the file (how many grades each student)
@@ -68,6 +60,7 @@ void uploadGrades(struct Student* students, int numStudents) {
         printf("Enter grade for %s (Student %d): ", students[i].name, students[i].number);
         scanf("%d", &students[i].marks);
         fprintf(file, "%s %d %d\n", students[i].name, students[i].number, students[i].marks);
+        printf("%s %d %d\n", students[i].name, students[i].number, students[i].marks);
     }
 
     // Close the file
@@ -86,22 +79,15 @@ void editGrades(struct Student* students, int numStudents) {
     int found = 0;
     for (int i = 0; i < numStudents; i++) {
         if (students[i].number == id) {
+            printf("\nEditing grades for %s with ID %d:",students[i].name, id);
+            printf("\nEnter new grade: ");
+            scanf("%d", &students[i].marks);
             found = 1;
             break;
         }
-    }
-
-    // If the student is found, allow the teacher to edit their grades (why i < 5)
-    if (found) {
-        printf("Editing grades for student with ID %d.\n", id);
-        for (int i = 0; i < 5; i++) {
-            printf("Enter grade %d: ", i + 1);
-            scanf("%d", &students[i].marks);
+        if (found == 0){
+            printf("\nNo student found with ID %d.\n", id);
         }
-    }
-    // If the student is not found, inform the teacher
-    else {
-        printf("No student found with ID %d.\n", id);
     }
 }
 
@@ -114,22 +100,10 @@ void sortGrades(struct Student* students, int numStudents) {
 
 // Function to view grades (JUST EDIT)
 void viewGrades(struct Student* students, int numStudents) {
-    printf("DISPLAY STUDENTS' GRADES:\n");
-    FILE* file = fopen("student_grades.txt", "r");
-    
-    if (file == NULL) {
-        printf("Error opening the file for reading.\n");
-        return;
-    }
-
+    printf("\nDISPLAY STUDENTS' GRADES:");
     for (int i = 0; i < numStudents; i++) {
-        if (fscanf(file, "%s %d %d", students[i].name, &students[i].number, &students[i].marks) != 3) {
-            printf("Error reading data from the file.\n");
-            break;
-        }
-        printf("\n Student's Name: %s\nStudent's ID: %d \n Student's Grade: %d\n", students[i].name, students[i].number, students[i].marks);
+        printf("\nStudent's Name: %s\nStudent's ID: %d \n Student's Grade: %d\n", students[i].name, students[i].number, students[i].marks);
     }
-    fclose(file);
 }
 
 
@@ -143,10 +117,13 @@ void studentSearch(struct Student* students, int numStudents) {
     // Implement this function to allow the teacher to search for students based on name or number.
 }
 
+
+
+// MAIN FUNCTION
 int main(void) {
     // Define the number of teachers and students
     int numTeachers = 2;
-    int numStudents = 3;
+    int numStudents = 4;
 
     // Sample teacher and student data
     struct Teacher teachers[2] = {
@@ -154,20 +131,25 @@ int main(void) {
         {"teacher2", "password2", 1}
     };
 
-    struct Student students[3] = {
-        {"StudentA", 1, 85},
-        {"StudentB", 2, 92},
-        {"StudentC", 3, 78}
+    struct Student students[4] = {
+        {"student1", "password1", "A", 11, 0},
+        {"student2", "password2", "B", 22, 0},
+        {"student3", "password3", "C", 33, 0},
+        {"student4", "password4", "D", 44, 0},
     };
 
-    int loggedInTeacher = -1;
-    int loggedInStudent = -1;
+
+    int loggedInTeacher;
+    int loggedInStudent;
 
     while (1) {
+        int exit = 0;
         int choice;
         printf("\nMAIN MENU:\n1. Teacher login\n2. Student login\n3. Exit\nEnter your choice: ");
         scanf("%d", &choice);
-
+        
+        
+        // Choice 1 for teacher
         if (choice == 1) {
             char username[50];
             char password[50];
@@ -175,8 +157,10 @@ int main(void) {
             scanf("%s", username);
             printf("Enter password: ");
             scanf("%s", password);
-
+            
             loggedInTeacher = teacherLogin(teachers, numTeachers, username, password);
+            
+            //Login Teacher Success
             if (loggedInTeacher != -1) {
                 printf("Teacher login successful!\n");
                 // Implement the teacher menu here
@@ -191,63 +175,77 @@ int main(void) {
                     printf("5. Calculate statistics\n");
                     printf("6. Student search\n");
                     printf("7. Logout\n");
+                    
+                    // query teacher input in teachr menu
                     printf("Enter your choice: ");
                     scanf("%d", &teacherChoice);
-
+                    
                     switch (teacherChoice) {
                         case 1:
                             // Call the uploadGrades function to upload student grades
                             uploadGrades(students, numStudents);
                             break;
-
+                            
                         case 2:
                             // Call the editGrades function to edit student grades
                             editGrades(students, numStudents);
                             break;
-
+                            
                         case 3:
                             // Call the sortGrades function to sort student grades
                             sortGrades(students, numStudents);
                             break;
-
+                            
                         case 4:
                             // Call the viewGrades function to view all student grades
                             viewGrades(students, numStudents);
                             break;
-
+                            
                         case 5:
                             // Call the calculateStatistics function to calculate statistics
                             calculateStatistics(students, numStudents);
                             break;
-
+                            
                         case 6:
                             // Call the studentSearch function to search for students
                             studentSearch(students, numStudents);
                             break;
-
+                            
                         case 7:
                             // Logout and return to the main menu
                             loggedInTeacher = -1;
                             printf("Logged out successfully.\n");
+                            exit = 1;
                             break;
-
+                            
                         default:
                             printf("Invalid choice. Please try again.\n");
                     }
+                    
+                    if (exit == 1)
+                        break;
                 }
                 
+                // Login Teacher Fail
             } else {
                 printf("Invalid login credentials. Try again.\n");
             }
-        } else if (choice == 2) {
+            
+            
+        }
+        
+        // Choice 2 for Student
+        else if (choice == 2) {
             char username[50];
             char password[50];
-            printf("Enter student name: ");
+            printf("Enter student's username: ");
             scanf("%s", username);
-            printf("Enter student number: ");
+            printf("Enter student's password: ");
             scanf("%s", password);
-
+            
             loggedInStudent = studentLogin(students, numStudents, username, password);
+            
+            // Login Student Success
             if (loggedInStudent != -1) {
                 printf("Student login successful!\n");
                 // Implement the student menu here
@@ -258,33 +256,40 @@ int main(void) {
                     printf("2. Logout\n");
                     printf("Enter your choice: ");
                     scanf("%d", &studentChoice);
-
+                    
                     switch (studentChoice) {
                         case 1:
                             // Implement the viewGrades function to view individual student grades
                             printf("Your grade: %d\n", students[loggedInStudent].marks);
                             break;
-
+                            
                         case 2:
                             // Logout and return to the main menu
                             loggedInStudent = -1;
                             printf("Logged out successfully.\n");
+                            exit = 1;
                             break;
-
+                            
                         default:
                             printf("Invalid choice. Please try again.\n");
                     }
+                    
+                    if (exit == 1)
+                        break;
                 }
+                
+                // Login Student Fail
             } else {
                 printf("Invalid login credentials. Try again.\n");
             }
-        } else if (choice == 3) {
+            
+        }
+        // Choice 3 for Exist
+         else if (choice == 3) {
             break;  // Exit the program
         } else {
             printf("Invalid choice. Please try again.\n");
         }
     }
-
     return 0;
 }
-
