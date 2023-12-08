@@ -18,7 +18,6 @@ struct Student {
 struct Teacher {
     char username[MAX_USERNAME];
     char password[MAX_PASSWORD];
-    int access_level;
 };
 
 // Function to check teacher login
@@ -180,24 +179,25 @@ void calculateStatistics(struct Student* students, int numStudents) {
 void studentSearch(struct Student* students, int numStudents) {
     int choice;
 
-    //Promt user to search student using name or number 
-    printf("Search by: \n1. Student Name \n2. Student Number \nEnter your choice: ");
+    //Promt user to search student using name or number
+    printf("\nSTUDENT SEARCH:");
+    printf("\nSearch by: \n1. Student Name \n2. Student Number \nEnter your choice: ");
     scanf("%d", &choice);
 
     // Search student by name
     if (choice == 1) {
         char searchName[MAX_NAME];
-        printf("Enter Student Name: ");
+        printf("Enter student name: ");
         scanf("%s", searchName);
 
         for (int i = 0; i < numStudents; i++) {
             if (strcmp(students[i].name, searchName) == 0) {
-                printf("Student Found!\nName: %s\nNumber: %d\n", students[i].name, students[i].number);
+                printf("Student Found!\n\nStudent's Info:\nStudent's Name: %s\nStudent's ID: %d \nStudent's Grade: %d\n", students[i].name, students[i].number, students[i].marks);
                 return;
             }
         }
         printf("Student not found!\n");
-    } 
+    }
 
     // Search student by number
     else if (choice == 2) {
@@ -207,7 +207,7 @@ void studentSearch(struct Student* students, int numStudents) {
 
         for (int i = 0; i < numStudents; i++) {
             if (students[i].number == searchNumber) {
-                printf("Student Found!\nName: %s\nNumber: %d\n", students[i].name, students[i].number);
+                printf("Student Found!\n\nStudent's Info:\nStudent's Name: %s\nStudent's ID: %d \nStudent's Grade: %d\n", students[i].name, students[i].number, students[i].marks);
                 return;
             }
         }
@@ -228,8 +228,8 @@ int main(void) {
 
     // Sample teacher and student data
     struct Teacher teachers[2] = {
-        {"teacher1", "password1", 1},
-        {"teacher2", "password2", 1}
+        {"teacher1", "password1"},
+        {"teacher2", "password2"}
     };
 
     struct Student students[4] = {
@@ -395,3 +395,4 @@ int main(void) {
     }
     return 0;
 }
+
