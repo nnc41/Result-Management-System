@@ -246,7 +246,7 @@ void studentSearch(struct Student* students, int numStudents) {
 int main(void) {
     
     listDirectoryContents();
-    
+        
     // Define the number of teachers and students
     int numTeachers = 3;
     int numStudents = 4;
