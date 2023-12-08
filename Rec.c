@@ -179,9 +179,12 @@ void calculateStatistics(struct Student* students, int numStudents) {
 // Function for student search
 void studentSearch(struct Student* students, int numStudents) {
     int choice;
+
+    //Promt user to search student using name or number 
     printf("Search by: \n1. Student Name \n2. Student Number \nEnter your choice: ");
     scanf("%d", &choice);
 
+    // Search student by name
     if (choice == 1) {
         char searchName[MAX_NAME];
         printf("Enter Student Name: ");
@@ -193,9 +196,11 @@ void studentSearch(struct Student* students, int numStudents) {
                 return;
             }
         }
-
         printf("Student not found!\n");
-    } else if (choice == 2) {
+    } 
+
+    // Search student by number
+    else if (choice == 2) {
         int searchNumber;
         printf("Enter Student Number: ");
         scanf("%d", &searchNumber);
