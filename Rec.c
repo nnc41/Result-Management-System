@@ -4,7 +4,8 @@
 #define MAX_NAME 50
 #define MAX_PASSWORD 50
 #define MAX_USERNAME 50
-
+#define MAX_SAMESTUDENTS_MAXMARKS 100
+#define MAX_SAMESTUDENTS_MINMARKS 100
 
 // Define data structures
 struct Student {
@@ -125,8 +126,8 @@ void calculateStatistics(struct Student* students, int numStudents) {
     int max = students[0].marks;
     int indexmin = 0;
     int indexmax = 0;
-    char studentsWithMin[100] = "";
-    char studentsWithMax[100] = "";
+    char studentsWithMin[MAX_SAMESTUDENTS_MAXMARKS] = "";
+    char studentsWithMax[MAX_SAMESTUDENTS_MINMARKS] = "";
     
     
     printf("\nSTATISTICS RECORD:");
@@ -223,13 +224,15 @@ void studentSearch(struct Student* students, int numStudents) {
 // MAIN FUNCTION
 int main(void) {
     // Define the number of teachers and students
-    int numTeachers = 2;
+    int numTeachers = 3;
     int numStudents = 4;
 
     // Sample teacher and student data
     struct Teacher teachers[2] = {
         {"teacher1", "password1"},
-        {"teacher2", "password2"}
+        {"teacher2", "password2"},
+        {"teacher3", "password3"}
+
     };
 
     struct Student students[4] = {
@@ -252,8 +255,8 @@ int main(void) {
         
         // Choice 1 for teacher
         if (choice == 1) {
-            char username[50];
-            char password[50];
+            char username[MAX_USERNAME];
+            char password[MAX_PASSWORD];
             printf("Enter teacher username: ");
             scanf("%s", username);
             printf("Enter password: ");
@@ -336,8 +339,8 @@ int main(void) {
         
         // Choice 2 for Student
         else if (choice == 2) {
-            char username[50];
-            char password[50];
+            char username[MAX_USERNAME];
+            char password[MAX_PASSWORD];
             printf("Enter student's username: ");
             scanf("%s", username);
             printf("Enter student's password: ");
