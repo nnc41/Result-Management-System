@@ -18,31 +18,34 @@ struct Student {
 struct Teacher {
     char username[MAX_USERNAME];
     char password[MAX_PASSWORD];
-    int access_level;
 };
 
-// Function to check teacher login
-int teacherLogin(struct Teacher *teachers, int numTeachers, char *username, char *password) {
+
+// Function to read teacher login information from file
+int readTeacherLoginInfo(struct Teacher *teachers, int numTeachers, const char *filename, char *username, char *password) {
+    FILE *file = fopen(filename, "r");
+    if (file == NULL) {
+        perror("Error opening file");
+        exit(EXIT_FAILURE);
+    }
+
     for (int i = 0; i < numTeachers; i++) {
+        // read from file
+        fscanf(file, "%s %s", teachers[i].username, teachers[i].password);
+
+        //compare 
         if (strcmp(teachers[i].username, username) == 0 && strcmp(teachers[i].password, password) == 0) {
+            fclose(file);
             return i; // Return the index of the teacher
         }
-    }
+    fclose(file);
     return -1; // Invalid login
+}
 }
 
-// Function to check student login
-int studentLogin(struct Student *students, int numStudents, char *username, char *password) {
-    for (int i = 0; i < numStudents; i++) {
-        if (strcmp(students[i].username, username) == 0 && strcmp(students[i].password, password) == 0) {
-            return i; // Return the index of the student
-        }
-    }
-    return -1; // Invalid login
-}
 
 // Function to read student login information from file
-int readStudentLoginInfo(struct Student *students, int numStudents, const char *filename) {
+int readStudentLoginInfo(struct Student *students, int numStudents, const char *filename, char *username, char *password) {
     FILE *file = fopen(filename, "r");
     if (file == NULL) {
         perror("Error opening file");
@@ -52,27 +55,17 @@ int readStudentLoginInfo(struct Student *students, int numStudents, const char *
     for (int i = 0; i < numStudents; i++) {
         fscanf(file, "%s %s %s %d %d",
                students[i].username, students[i].password, students[i].name, &students[i].number, &students[i].marks);
-    }
+               
+        if (strcmp(students[i].username, username) == 0 && strcmp(students[i].password, password) == 0) {
+            fclose(file);
+            return i; // Return the index of the student
+        }
 
     fclose(file);
-    return 0;
+    return -1; // Invalid login
+}
 }
 
-// Function to read teacher login information from file
-int readTeacherLoginInfo(struct Teacher *teachers, int numTeachers, const char *filename) {
-    FILE *file = fopen(filename, "r");
-    if (file == NULL) {
-        perror("Error opening file");
-        exit(EXIT_FAILURE);
-    }
-
-    for (int i = 0; i < numTeachers; i++) {
-        fscanf(file, "%s %s", teachers[i].username, teachers[i].password);
-    }
-
-    fclose(file);
-    return 0;
-}
 
 // Function to upload grades
 void uploadGrades(struct Student* students, int numStudents, const char *filename) {
@@ -83,6 +76,7 @@ void uploadGrades(struct Student* students, int numStudents, const char *filenam
     }
     
     for (int i = 0; i < numStudents; i++) {
+
         // Prompt for grade input
         printf("Enter grade for %s (Student %d): ", students[i].name, students[i].number);
         scanf("%d", &students[i].marks);
@@ -99,27 +93,60 @@ void uploadGrades(struct Student* students, int numStudents, const char *filenam
 
 
 // Function to edit grades
-void editGrades(struct Student* students, int numStudents) {
-    // Ask for the student ID
-    int id;
-    printf("Enter student ID: ");
-    scanf("%d", &id);
-
-    // Find the student with the given ID
+void editGrades(struct Student* students, int numStudents, const char *filename) {
+    int number;
     int found = 0;
+
+    FILE *file = fopen(filename, "r");
+    if (file == NULL) {
+        perror("Error opening file");
+        exit(EXIT_FAILURE);
+    }
+
+    // Read data from the file into the students array
     for (int i = 0; i < numStudents; i++) {
-        if (students[i].number == id) {
-            printf("\n\nEditing grades for %s with ID %d:",students[i].name, id);
-            printf("\nEnter new grade: ");
-            scanf("%d", &students[i].marks);
+        fscanf(file, "%s %s %s %d %d",
+               students[i].username, students[i].password, students[i].name, &students[i].number, &students[i].marks);
+    }
+
+    fclose(file);
+
+    file = fopen(filename, "r+");
+    if (file == NULL) {
+        perror("Error opening file");
+        exit(EXIT_FAILURE);
+    }
+
+    printf("Enter student ID: ");
+    scanf("%d", &number);
+
+    for (int i = 0; i < numStudents; i++) {
+        if (students[i].number == number) {
+            // Student found
             found = 1;
+            printf("\nEditing grades for %s with ID %d:\n", students[i].name, number);
+            printf("Enter new grade: ");
+            scanf("%d", &students[i].marks);
+
+            // Move file pointer to the position where the specific student's data is stored
+            fseek(file, i * sizeof(struct Student), SEEK_SET);
+
+            // Write updated data back to the file
+            fprintf(file, "%s %s %s %d %d\n",
+                    students[i].username, students[i].password, students[i].name, students[i].number, students[i].marks);
+
             break;
         }
     }
-    if (found == 0){
-        printf("\nNo student found with ID %d.\n", id);
-        }
+
+    fclose(file);
+
+    if (found == 0) {
+        printf("\nNo student found with ID %d.\n", number);
+    }
 }
+
+
 
 /*
  The function compares the marks values:
@@ -137,7 +164,7 @@ int comparator(const void* p, const void* q) {
 }
 
 // Function to sort grades
-void sortGrades(struct Student* students, int numStudents) {
+void sortGrades(struct Student* students, int numStudents, const char *filename) {
     // Create a temporary array for sorting while keeping the original order
     struct Student* tempStudents = malloc(numStudents * sizeof(struct Student));
     if (tempStudents == NULL) {
@@ -168,7 +195,7 @@ void sortGrades(struct Student* students, int numStudents) {
 }
 
 // Function to view grades
-void viewGrades(struct Student* students, int numStudents) {
+void viewGrades(struct Student* students, int numStudents, const char *filename) {
     printf("\n\nDISPLAY STUDENTS' GRADES:");
     for (int i = 0; i < numStudents; i++) {
         printf("\nStudent's Name: %s\nStudent's ID: %d \nStudent's Grade: %d\n", students[i].name, students[i].number, students[i].marks);
@@ -178,7 +205,7 @@ void viewGrades(struct Student* students, int numStudents) {
 
 // Function to calculate statistics
 // Implement this function to calculate average, minimum, and maximum marks. (JUST UPDATE)
-void calculateStatistics(struct Student* students, int numStudents) {
+void calculateStatistics(struct Student* students, int numStudents, const char *filename) {
     int total = 0;
     int average;
     int min = students[0].marks;
@@ -233,7 +260,7 @@ void calculateStatistics(struct Student* students, int numStudents) {
     }
 
 // Function for student search
-void studentSearch(struct Student* students, int numStudents) {
+void studentSearch(struct Student* students, int numStudents, const char *filename) {
     int choice;
     printf("\nSearch by: \n1. Student Name \n2. Student Number \nEnter your choice: ");
     scanf("%d", &choice);
@@ -279,8 +306,6 @@ int main(void) {
     struct Student students[4]; // Update the array size based on the actual number of students
 
     // Read login information from files
-    readTeacherLoginInfo(teachers, numTeachers, "teachers_login_datas.txt");
-    readStudentLoginInfo(students, numStudents, "students_login_info_datas.txt");
 
     int loggedInTeacher;
     int loggedInStudent;
@@ -301,7 +326,7 @@ int main(void) {
             printf("Enter password: ");
             scanf("%s", password);
             
-            loggedInTeacher = teacherLogin(teachers, numTeachers, username, password);
+            loggedInTeacher = readTeacherLoginInfo(teachers, numTeachers, "teachers_login_datas.txt", username, password);
             
             //Login Teacher Success
             if (loggedInTeacher != -1) { // if loggedInTeacher return -1 means fail
@@ -331,25 +356,25 @@ int main(void) {
                             break;
                             
                         case 2:
-                            editGrades(students, numStudents);
+                            editGrades(students, numStudents, "students_login_info_datas.txt" );
                             break;
                             
                         case 3:
                             // Call the sortGrades function to sort student grades
-                            sortGrades(students, numStudents);
+                            sortGrades(students, numStudents, "students_login_info_datas.txt");
                             break;
                             
                         case 4:
-                            viewGrades(students, numStudents);
+                            viewGrades(students, numStudents, "students_login_info_datas.txt");
                             break;
                             
                         case 5:
-                            calculateStatistics(students, numStudents);
+                            calculateStatistics(students, numStudents, "students_login_info_datas.txt");
                             break;
                             
                         case 6:
                             // Call the studentSearch function to search for students
-                            studentSearch(students, numStudents);
+                            studentSearch(students, numStudents, "students_login_info_datas.txt");
                             break;
                             
                         case 7:
@@ -385,7 +410,8 @@ int main(void) {
             printf("Enter student's password: ");
             scanf("%s", password);
             
-            loggedInStudent = studentLogin(students, numStudents, username, password);
+            loggedInStudent = readStudentLoginInfo(students, numStudents, "students_login_info_datas.txt", username, password);
+
             
             // Login Student Success
             if (loggedInStudent != -1) {
