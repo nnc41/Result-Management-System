@@ -1,4 +1,4 @@
-student1 password1 A 111 0
-student2 password2 B 222 0
+student1 password1 A 111 78
+student2 password2 B 222 90
 student3 password3 C 333 0
-student4 password4 D 444 0
+student4 password4 D 444 90

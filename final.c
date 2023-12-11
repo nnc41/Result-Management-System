@@ -75,15 +75,28 @@ int readTeacherLoginInfo(struct Teacher *teachers, int numTeachers, const char *
 }
 
 // Function to upload grades
-void uploadGrades(struct Student* students, int numStudents) {
-
+void uploadGrades(struct Student* students, int numStudents, const char *filename) {
+    FILE *file = fopen(filename, "w");
+    if (file == NULL) {
+        perror("Error opening file");
+        exit(EXIT_FAILURE);
+    }
+    
     for (int i = 0; i < numStudents; i++) {
+        // Prompt for grade input
         printf("Enter grade for %s (Student %d): ", students[i].name, students[i].number);
         scanf("%d", &students[i].marks);
+        
+        // Write updated data back to the file 
+        fprintf(file, "%s %s %s %d %d\n",
+                students[i].username, students[i].password, students[i].name, students[i].number, students[i].marks);
+        
         printf("%s %d %d\n", students[i].name, students[i].number, students[i].marks);
     }
-
+    
+    fclose(file); // Close the file after writing
 }
+
 
 // Function to edit grades
 void editGrades(struct Student* students, int numStudents) {
@@ -314,7 +327,7 @@ int main(void) {
                     
                     switch (teacherChoice) {
                         case 1:
-                            uploadGrades(students, numStudents);
+                            uploadGrades(students, numStudents, "students_login_info_datas.txt");
                             break;
                             
                         case 2:
