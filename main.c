@@ -7,27 +7,6 @@
 #define MAX_SAMESTUDENTS_MAXMARKS 100
 #define MAX_SAMESTUDENTS_MINMARKS 100
 
-void listDirectoryContents(void) {
-    printf("\nListing contents of the current directory:\n");
-    system("ls"); // Execute 'ls' command
-}
-
-void readFromFile(const char *filename) {
-    char command[100];
-    snprintf(command, sizeof(command), "cat %s", filename); // Create the Unix command
-
-    printf("Reading from file %s using Unix command 'cat':\n", filename);
-    system(command); // Execute the 'cat' command to display the file content
-}
-
-void writeToFile(const char *filename) {
-    char command[100];
-    snprintf(command, sizeof(command), "echo 'Hello, Unix commands!' > %s", filename); // Create the Unix command
-
-    printf("Writing to file %s using Unix command 'echo':\n", filename);
-    system(command); // Execute the 'echo' command to write to the file
-}
-
 // Define data structures
 struct Student {
     char username[MAX_USERNAME];
@@ -244,8 +223,6 @@ void studentSearch(struct Student* students, int numStudents) {
 
 // MAIN FUNCTION
 int main(void) {
-    
-    listDirectoryContents();
         
     // Define the number of teachers and students
     int numTeachers = 3;
