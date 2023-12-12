@@ -50,7 +50,7 @@ int readTeacherLoginInfo(struct Teacher *teachers, int numTeachers, const char *
     }
 
     for (int i = 0; i < numTeachers; i++) {
-        fscanf(file, "%s %s %d", teachers[i].username, teachers[i].password);
+        fscanf(file, "%s %s", teachers[i].username, teachers[i].password);
     }
 
     fclose(file);
@@ -73,8 +73,6 @@ int readStudentLoginInfo(struct Student *students, int numStudents, const char *
     fclose(file);
     return 0;
 }
-
-
 
 // Function to upload grades
 void uploadGrades(struct Student* students, int numStudents) {
@@ -143,7 +141,9 @@ int comparator(const void* p, const void* q) {
 
 // Function to sort grades
 void sortGrades(struct Student* students, int numStudents) {
-    // Create a temporary array for sorting while keeping the original order
+    // Allocates memory for a temporary array tempStudents of the same size as the original array of students. 
+    // This array will be used for sorting while preserving the original order.
+    // malloc() takes in the number of bytes (size_t size) as an argument that you want to allocate in memory.
     struct Student* tempStudents = malloc(numStudents * sizeof(struct Student));
     if (tempStudents == NULL) {
         perror("Memory allocation error");
@@ -151,23 +151,27 @@ void sortGrades(struct Student* students, int numStudents) {
     }
 
     // Copy the original array to the temporary array
+    // Copies the contents of the original students array into the tempStudents array.
+    // void* memcpy(void* destination, const void* source, size_t num);
     memcpy(tempStudents, students, numStudents * sizeof(struct Student));
 
     // Sort the temporary array based on the specified comparator
+    // void qsort(void* base, size_t num, size_t size, int (*comparator)(const void*, const void*));
+
+    /*
+    base is a pointer to the start of the array to be sorted.
+    num is the number of elements in the array.
+    size is the size in bytes of each element in the array.
+    comparator is a function pointer to a comparison function that determines the order of elements.
+    */
+
     qsort(tempStudents, numStudents, sizeof(struct Student), comparator);
 
     // Print the Sorted Structure with original order
     printf("\n\nSORTED BY MARKS:\n");
     for (int i = 0; i < numStudents; i++) {
-        // Find the original order of the student in the original array
-        int originalOrder = 0;
-        while (originalOrder < numStudents && tempStudents[i].number != students[originalOrder].number) {
-            originalOrder++;
-        }
-
-        printf("\nStudent's Name: %s\nStudent's ID: %d \nStudent's Grade: %d\n", students[originalOrder].name, students[originalOrder].number, tempStudents[i].marks);
+        printf("\nStudent's Name: %s\nStudent's ID: %d \nStudent's Grade: %d\n", tempStudents[i].name, tempStudents[i].number, tempStudents[i].marks);
     }
-
     // Free the allocated memory for the temporary array
     free(tempStudents);
 }
@@ -235,19 +239,6 @@ void calculateStatistics(struct Student* students, int numStudents) {
 
         printf("\nMinimum mark: %d (Students with minimum marks: %s)", min, studentsWithMin);
         printf("\nMaximum mark: %d (Students with maximum marks: %s)", max, studentsWithMax);
-
-    FILE *file = fopen("students_login_info_datas.txt", "w");
-    if (file == NULL) {
-        perror("Error opening file");
-        exit(EXIT_FAILURE);
-    }
-
-    for (int i = 0; i < numStudents; i++) {
-        fprintf(file, "%s %s %s %d %d\n", students[i].username, students[i].password,
-                students[i].name, students[i].number, students[i].marks);
-    }
-
-    fclose(file);
 }
     
 
