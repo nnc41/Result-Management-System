@@ -19,7 +19,6 @@ struct Student {
 struct Teacher {
     char username[MAX_USERNAME];
     char password[MAX_PASSWORD];
-    int access_level;
     
 };
 
@@ -52,7 +51,7 @@ int readTeacherLoginInfo(struct Teacher *teachers, int numTeachers, const char *
     }
 
     for (int i = 0; i < numTeachers; i++) {
-        fscanf(file, "%s %s %d", teachers[i].username, teachers[i].password, &teachers[i].access_level);
+        fscanf(file, "%s %s %d", teachers[i].username, teachers[i].password);
     }
 
     fclose(file);
