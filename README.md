@@ -34,12 +34,14 @@ The main program is contained within a single source file named rec.c. It includ
 ### Functions:
 1. teacherLogin: Validates teacher login credentials.
 2. studentLogin: Validates student login credentials.
-3. uploadGrades: Allows teachers to upload grades for students.
-4. editGrades: Enables teachers to edit specific student grades.
-5. sortGrades: Sorts student grades based on marks.
-6. viewGrades: Allows teachers to view all student grades.
-7. calculateStatistics: Calculates statistics like average, minimum, and maximum grades.
-8. studentSearch: Provides the ability to search for students by name or student number.
+3. Read Teacher's Login Information from Files: Reads login information for teachers from separate text files.
+4. Read Student's Login Information from Files: Reads login information for students from separate text files.
+5. uploadGrades: Allows teachers to upload grades for students.
+6. editGrades: Enables teachers to edit specific student grades.
+7. sortGrades: Sorts student grades based on marks.
+8. viewGrades: Allows teachers to view all student grades.
+9. calculateStatistics: Calculates statistics like average, minimum, and maximum grades.
+10. studentSearch: Provides the ability to search for students by name or student number.
 
 ## How to Run
 To run the program:
