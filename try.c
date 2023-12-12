@@ -132,6 +132,7 @@ void editGrades(struct Student* students, int numStudents) {
  If marksP is greater than marksQ, it returns 1. This indicates that p should come after q.
  If marksP is equal to marksQ, it returns 0, indicating that the order between p and q does not matter since they have the same value.
  */
+// Comparator function for qsort
 int comparator(const void* p, const void* q) {
     int marksP = ((struct Student*)p)->marks;
     int marksQ = ((struct Student*)q)->marks;
@@ -141,36 +142,35 @@ int comparator(const void* p, const void* q) {
     else return 0;
 }
 
+
 // Function to sort grades
 void sortGrades(struct Student* students, int numStudents) {
+    // Create a temporary array for sorting while keeping the original order
     struct Student* tempStudents = malloc(numStudents * sizeof(struct Student));
     if (tempStudents == NULL) {
         perror("Memory allocation error");
         exit(EXIT_FAILURE);
     }
 
+    // Copy the original array to the temporary array
     memcpy(tempStudents, students, numStudents * sizeof(struct Student));
 
+    // Sort the temporary array based on the specified comparator
     qsort(tempStudents, numStudents, sizeof(struct Student), comparator);
 
-    FILE *file = fopen("students_login_info_datas.txt", "w");
-    if (file == NULL) {
-        perror("Error opening file");
-        exit(EXIT_FAILURE);
-    }
-
+    // Print the Sorted Structure with original order
+    printf("\n\nSORTED BY MARKS:\n");
     for (int i = 0; i < numStudents; i++) {
+        // Find the original order of the student in the original array
         int originalOrder = 0;
         while (originalOrder < numStudents && tempStudents[i].number != students[originalOrder].number) {
             originalOrder++;
         }
 
-        fprintf(file, "%s %s %s %d %d\n", students[originalOrder].username, students[originalOrder].password,
-                students[originalOrder].name, students[originalOrder].number, tempStudents[i].marks);
+        printf("\nStudent's Name: %s\nStudent's ID: %d \nStudent's Grade: %d\n", students[originalOrder].name, students[originalOrder].number, tempStudents[i].marks);
     }
 
-    fclose(file);
-
+    // Free the allocated memory for the temporary array
     free(tempStudents);
 }
 

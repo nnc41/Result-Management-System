@@ -1,4 +1,4 @@
-  'LÖ 21123834 45
-   -1131458592 45
-X`a  ÷ 21446832 45
-w@Cø ¼÷  -1131458184 45
+student1 password1 A 111 0
+student2 password2 B 222 0
+student3 password3 C 333 0
+student4 password4 D 444 0
