@@ -139,7 +139,7 @@ int comparator(const void* p, const void* q) {
     else return 0;
 }
 
-
+// Sorts and prints student grade, maintains original order 
 // Function to sort grades
 void sortGrades(struct Student* students, int numStudents) {
     // Allocates memory for a temporary array tempStudents of the same size as the original array of students. 
