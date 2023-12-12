@@ -19,7 +19,6 @@ struct Student {
 struct Teacher {
     char username[MAX_USERNAME];
     char password[MAX_PASSWORD];
-    
 };
 
 // Function to check teacher login
