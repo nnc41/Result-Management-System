@@ -128,6 +128,7 @@ void editGrades(struct Student* students, int numStudents) {
  If marksP is greater than marksQ, it returns 1. This indicates that p should come after q.
  If marksP is equal to marksQ, it returns 0, indicating that the order between p and q does not matter since they have the same value.
  */
+// compare 2 students and used to for sorting students based on marks in ascending order
 // Comparator function for qsort
 int comparator(const void* p, const void* q) {
     int marksP = ((struct Student*)p)->marks;
